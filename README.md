@@ -1,1 +1,1 @@
-# chess_game_intern_project
+# maze_game_intern_project
