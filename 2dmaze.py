@@ -7,16 +7,17 @@
 
 import pygame
 import os
+import sys
 from pygame import gfxdraw
 
 ##the code will consist of 2 classes , one for the player ( u control ) and one for the walls
 class Player(object):
-    
+ 
     def __init__(self):
         self.rect = pygame.Rect(32, 32, 16, 16)
 
     #function of collision of player with wall
-    def collide(self,x,y):
+    def collide(self, x, y):
         for wall in walls:
             if self.rect.colliderect(wall.rect):
                 if x > 0:
@@ -29,22 +30,25 @@ class Player(object):
                     self.rect.top = wall.rect.bottom
 
     #moves player on either x axis or y axis , helper method for move()
-    def moveAxis(self,x,y):
-        self.rect.x +=x
-        self.rect.y +=y
-        self.collide(self,x,y)
+    def moveAxis(self, x, y):
+        self.rect.x += x
+        self.rect.y += y
+        self.collide(x, y)
 
-    def move(self,x,y):
+    def move(self, x, y):
         if x != 0:
-            self.moveAxis(self,x,0)
+            self.moveAxis(x, 0)
         if y != 0:
-            self.moveAxis(self,0,y)
+            self.moveAxis(0, y)
+
 
 
 class Wall(object):
-    def __init__(self,position):
+ 
+    def __init__(self, pos):
         walls.append(self)
-        self.rect = pygame.rect(position[0],position[1],16,16)
+        self.rect = pygame.Rect(pos[0], pos[1], 16, 16)
+ 
 
 
 # now we initialize the environment
@@ -88,4 +92,44 @@ for row in map:
         x += 18
     y += 18
     x = 1
+
+running = True
+while running:
+    
+    clock.tick(40) #sets speed of player
+    
+
+    # conditions for the game to keep running
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            running = False
+        if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+            running = False
  
+    # move the player if an arrow key is pressed
+    key = pygame.key.get_pressed()
+    if key[pygame.K_LEFT]:
+        player.move(-2, 0)
+    if key[pygame.K_RIGHT]:
+        player.move(2, 0)
+    if key[pygame.K_UP]:
+        player.move(0, -2)
+    if key[pygame.K_DOWN]:
+        player.move(0, 2)
+ 
+    # if player reaches end point, the game ends
+    if player.rect.colliderect(end_rect):
+        pygame.quit()
+        sys.exit()
+ 
+    # draw the map
+    screen.fill((0, 0, 0))
+    for wall in walls:
+        pygame.draw.ellipse(screen, (0, 128, 64), wall.rect)
+    pygame.draw.rect(screen, (255, 0, 0), end_rect)
+    pygame.draw.rect(screen, (255, 200, 0), player.rect)
+    pygame.display.flip()
+    clock.tick(360)
+ 
+pygame.quit()
+
