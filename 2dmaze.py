@@ -51,4 +51,41 @@ class Wall(object):
 os.environ["SDL_VIDEO_CENTERED"] = "1" #centers the game window on the screen
 pygame.init()  # initiliazes pygame library for use
 
-walls=[]
+pygame.display.set_caption("Reach the red square!")
+screen = pygame.display.set_mode((360, 270))
+ 
+clock = pygame.time.Clock()
+walls = []
+player = Player() # initialize player
+
+#initialize the map
+map = """
+11111111111111111111
+1                  1
+1         111111   1
+1   1111       1   1
+1   1        1111  1
+1 111  1111        1
+1   1     1 1      1
+1   1     1   111 11
+1   111 111   1 1  1
+1     1   1   1 1  1
+111   1   11111 1  1
+1 1      11        1
+1 1   1111   111   1
+1     1    2   1   1
+11111111111111111111
+""".splitlines()[1:]
+ 
+# Parse the level string above. 1 = wall, 2 = destination(end point)
+x = y = 1
+for row in map:
+    for col in row:
+        if col == "1":
+            Wall((x, y))
+        if col == "2":
+            end_rect = pygame.Rect(x, y, 10, 10)
+        x += 18
+    y += 18
+    x = 1
+ 
